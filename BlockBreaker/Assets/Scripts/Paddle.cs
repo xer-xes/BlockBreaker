@@ -9,11 +9,31 @@ public class Paddle : MonoBehaviour
     [SerializeField] private float Min_Clamp = 1;
     [SerializeField] private float Max_Clamp = 15;
 
+    Ball Ball;
+    GameStatus GameStatus;
+
+    private void Start()
+    {
+        Ball = FindObjectOfType<Ball>();
+        GameStatus = FindObjectOfType<GameStatus>();
+    }
+
     private void Update()
     {
-        //Debug.Log(Input.mousePosition.x / Screen.width * screenWidthInUnits);
-        float MousePositionInX = Mathf.Clamp(Input.mousePosition.x / Screen.width * screenWidthInUnits,Min_Clamp,Max_Clamp);
-        Vector2 PaddlePos = new Vector2(MousePositionInX, transform.position.y);
+        Vector2 PaddlePos = new Vector2(transform.position.x, transform.position.y);
+        PaddlePos.x = Mathf.Clamp(GetXPos(), Min_Clamp, Max_Clamp);
         transform.position = PaddlePos;
+    }
+
+    private float GetXPos()
+    {
+        if (GameStatus.IsAutoPlayEnabled())
+        {
+            return Ball.transform.position.x;
+        }
+        else
+        {
+            return Input.mousePosition.x / Screen.width * screenWidthInUnits;
+        }
     }
 }
